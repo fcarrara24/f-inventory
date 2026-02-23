@@ -1,15 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
-
-const App = () => {
-  return (
-    <div>
-      <h1>Inventory Frontend</h1>
-      <p>App is loading...</p>
-    </div>
-  );
-};
+import App from './App';
 
 const root = createRoot(
   document.getElementById('root') as HTMLElement
