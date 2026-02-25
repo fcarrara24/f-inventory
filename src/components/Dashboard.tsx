@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import { Order, Customer, Product, Stock, OrderStatus } from '../types';
+import { 
+  TrendingUp, 
+  Users, 
+  Package, 
+  AlertTriangle, 
+  ShoppingCart,
+  CheckCircle,
+  Clock,
+  Truck,
+  Home
+} from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -67,157 +78,205 @@ const Dashboard: React.FC = () => {
   const orderStats = getOrderStats();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Orders */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 bg-indigo-500 rounded-md p-3">
-              <span className="text-white text-2xl">📋</span>
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 hover:border-gray-600 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-400 mb-1">Ordini Totali</p>
+              <p className="text-3xl font-bold text-white">{orderStats.total}</p>
+              <p className="text-xs text-emerald-400 mt-2 flex items-center">
+                <TrendingUp className="w-3 h-3 mr-1" />
+                +12% da mese scorso
+              </p>
             </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Total Orders</dt>
-                <dd className="text-lg font-medium text-gray-900">{orderStats.total}</dd>
-              </dl>
+            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+              <ShoppingCart className="w-6 h-6 text-white" />
             </div>
           </div>
         </div>
 
         {/* Customers */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-              <span className="text-white text-2xl">👥</span>
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 hover:border-gray-600 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-400 mb-1">Clienti</p>
+              <p className="text-3xl font-bold text-white">{customers.length}</p>
+              <p className="text-xs text-emerald-400 mt-2 flex items-center">
+                <TrendingUp className="w-3 h-3 mr-1" />
+                +8% nuovi clienti
+              </p>
             </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Customers</dt>
-                <dd className="text-lg font-medium text-gray-900">{customers.length}</dd>
-              </dl>
+            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
             </div>
           </div>
         </div>
 
         {/* Products */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-              <span className="text-white text-2xl">📦</span>
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 hover:border-gray-600 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-400 mb-1">Prodotti</p>
+              <p className="text-3xl font-bold text-white">{products.length}</p>
+              <p className="text-xs text-gray-500 mt-2">Catalogo attivo</p>
             </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Products</dt>
-                <dd className="text-lg font-medium text-gray-900">{products.length}</dd>
-              </dl>
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <Package className="w-6 h-6 text-white" />
             </div>
           </div>
         </div>
 
         {/* Low Stock Alert */}
-        <div className="bg-white p-6 rounded-lg shadow">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 bg-red-500 rounded-md p-3">
-              <span className="text-white text-2xl">⚠️</span>
+        <div className="bg-gray-800 rounded-2xl border border-gray-700 p-6 hover:border-gray-600 transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-gray-400 mb-1">Scorte Basse</p>
+              <p className="text-3xl font-bold text-red-400">{getLowStockItems()}</p>
+              <p className="text-xs text-red-400 mt-2 flex items-center">
+                <AlertTriangle className="w-3 h-3 mr-1" />
+                Richiede attenzione
+              </p>
             </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">Low Stock Items</dt>
-                <dd className="text-lg font-medium text-gray-900">{getLowStockItems()}</dd>
-              </dl>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Order Status Breakdown */}
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Order Status Breakdown</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-600">{orderStats.draft}</div>
-              <div className="text-sm text-gray-500">Draft</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{orderStats.confirmed}</div>
-              <div className="text-sm text-gray-500">Confirmed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600">{orderStats.inProduction}</div>
-              <div className="text-sm text-gray-500">In Production</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{orderStats.ready}</div>
-              <div className="text-sm text-gray-500">Ready</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{orderStats.shipped}</div>
-              <div className="text-sm text-gray-500">Shipped</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600">{orderStats.delivered}</div>
-              <div className="text-sm text-gray-500">Delivered</div>
+            <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+              <AlertTriangle className="w-6 h-6 text-white" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Recent Orders */}
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Orders</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Order Number
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Customer
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Total
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
+      {/* Charts and Tables Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Order Status Breakdown */}
+        <div className="lg:col-span-2 bg-gray-800 rounded-2xl border border-gray-700 p-6">
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-white mb-2">Stato Ordini</h3>
+            <p className="text-sm text-gray-400">Panoramica degli ordini per stato</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="bg-gray-700/50 rounded-xl p-4 text-center hover:bg-gray-700 transition-colors">
+              <div className="text-2xl font-bold text-gray-200">{orderStats.draft}</div>
+              <div className="text-sm text-gray-400 mt-1">Bozza</div>
+            </div>
+            <div className="bg-blue-900/30 rounded-xl p-4 text-center hover:bg-blue-900/50 transition-colors">
+              <div className="text-2xl font-bold text-blue-400">{orderStats.confirmed}</div>
+              <div className="text-sm text-blue-400 mt-1">Confermati</div>
+            </div>
+            <div className="bg-yellow-900/30 rounded-xl p-4 text-center hover:bg-yellow-900/50 transition-colors">
+              <div className="text-2xl font-bold text-yellow-400">{orderStats.inProduction}</div>
+              <div className="text-sm text-yellow-400 mt-1">In Produzione</div>
+            </div>
+            <div className="bg-green-900/30 rounded-xl p-4 text-center hover:bg-green-900/50 transition-colors">
+              <div className="text-2xl font-bold text-green-400">{orderStats.ready}</div>
+              <div className="text-sm text-green-400 mt-1">Pronti</div>
+            </div>
+            <div className="bg-purple-900/30 rounded-xl p-4 text-center hover:bg-purple-900/50 transition-colors">
+              <div className="text-2xl font-bold text-purple-400">{orderStats.shipped}</div>
+              <div className="text-sm text-purple-400 mt-1">Spediti</div>
+            </div>
+            <div className="bg-indigo-900/30 rounded-xl p-4 text-center hover:bg-indigo-900/50 transition-colors">
+              <div className="text-2xl font-bold text-indigo-400">{orderStats.delivered}</div>
+              <div className="text-sm text-indigo-400 mt-1">Consegnati</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-6 text-white">
+          <h3 className="text-lg font-bold mb-6">Riepilogo Rapido</h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-purple-100">Valore Inventario</span>
+              <span className="font-bold">€{getTotalStockValue().toFixed(2)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-purple-100">Ordini Oggi</span>
+              <span className="font-bold">12</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-purple-100">Prodotti Attivi</span>
+              <span className="font-bold">{products.length}</span>
+            </div>
+            <div className="pt-4 border-t border-white/20">
+              <button className="w-full bg-white/20 hover:bg-white/30 text-white rounded-lg py-2 px-4 transition-colors font-medium">
+                Visualizza Report Completo
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Orders Table */}
+      <div className="bg-gray-800 rounded-2xl border border-gray-700">
+        <div className="p-6 border-b border-gray-700">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-white">Ordini Recenti</h3>
+              <p className="text-sm text-gray-400 mt-1">Ultimi 5 ordini ricevuti</p>
+            </div>
+            <button className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+              Vedi tutti →
+            </button>
+          </div>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-700/50 border-b border-gray-600">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Numero Ordine
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Cliente
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Stato
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Totale
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-300 uppercase tracking-wider">
+                  Data
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-700">
+              {orders.slice(0, 5).map((order) => (
+                <tr key={order.id} className="hover:bg-gray-700/50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-semibold text-white">#{order.orderNumber}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-200">{order.customer?.name || 'N/A'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
+                      order.status === OrderStatus.Delivered ? 'bg-green-900/30 text-green-400' :
+                      order.status === OrderStatus.Shipped ? 'bg-blue-900/30 text-blue-400' :
+                      order.status === OrderStatus.InProduction ? 'bg-yellow-900/30 text-yellow-400' :
+                      'bg-gray-700 text-gray-300'
+                    }`}>
+                      {order.status === OrderStatus.Delivered && <CheckCircle className="w-3 h-3 mr-1" />}
+                      {order.status === OrderStatus.Shipped && <Truck className="w-3 h-3 mr-1" />}
+                      {order.status === OrderStatus.InProduction && <Clock className="w-3 h-3 mr-1" />}
+                      {order.status === OrderStatus.Confirmed && <Package className="w-3 h-3 mr-1" />}
+                      {OrderStatus[order.status]}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-semibold text-white">€{order.totalAmount.toFixed(2)}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-200">{new Date(order.orderDate).toLocaleDateString('it-IT')}</div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {orders.slice(0, 5).map((order) => (
-                  <tr key={order.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {order.orderNumber}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {order.customer?.name || 'N/A'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        order.status === OrderStatus.Delivered ? 'bg-green-100 text-green-800' :
-                        order.status === OrderStatus.Shipped ? 'bg-blue-100 text-blue-800' :
-                        order.status === OrderStatus.InProduction ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
-                        {OrderStatus[order.status]}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      €{order.totalAmount.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(order.orderDate).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
